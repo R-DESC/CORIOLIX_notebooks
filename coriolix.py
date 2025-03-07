@@ -16,7 +16,7 @@ class coriolix:
                 'Sikuliaq': 'https://coriolix.sikuliaq.alaska.edu/api', 
                 'Taani': 'https://taani-pub-ship.taani.oregonstate.edu/api', 
                 'Narragansett Dawn': 'https://coriolix.gso.uri.edu/api', 
-                'George Mason': 'https://coriolix.usm.edu/api',
+                'Gilbert Mason': 'https://coriolix.usm.edu/api',
                 'Savannah': 'https://coriolix.skio.uga.edu/api',
                 }
     # Dictionary of shipside API URLs by vessel name.
@@ -25,18 +25,27 @@ class coriolix:
                 'Sikuliaq': 'https://coriolix.sikuliaq.alaska.edu/api', 
                 'Taani': 'https://taani-pub-ship.taani.oregonstate.edu/api', 
                 'Narragansett Dawn': 'https://coriolix.gso.uri.edu/api', 
-                'George Mason': 'https://coriolix.usm.edu/api',
+                'Gilbert Mason': 'https://coriolix.usm.edu/api',
                 'Savannah': 'https://coriolix.skio.uga.edu/api',
                 }
 
     # Constructor: Use a ship_name to lookup and set the instance varaible: api_url
-    def __init__(self, ship_name):
+    def __init__(self, ship_name, server):
         self.ship_name = ship_name
-        self.api_url = self.shoreside_api_urls[ship_name]
+        self.server = server
+        # self.api_url = self.shoreside_api_urls[ship_name]
+        self.get_api_url()
         self.get_schema()
         self.get_cruises()
         self.get_sensors(enabled='true')
         self.get_sensor_parameters()
+
+    # Build the api url
+    def get_api_url(self):
+       if self.server == "ship":
+           self.api_url = self.shipside_api_urls[self.ship_name]
+       elif self.server == "shore":
+           self.api_url = self.shoreside_api_urls[self.ship_name]
 
     # Fetch the API schema and add it to the coriolix object
     def get_schema(self):
