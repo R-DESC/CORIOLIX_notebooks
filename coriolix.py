@@ -31,6 +31,7 @@ class coriolix:
 
     # Constructor: Use a ship_name to lookup and set the instance varaible: api_url
     def __init__(self, ship_name, server):
+        """ship_name = vessel name, server = ship or shore."""
         self.ship_name = ship_name
         self.server = server
         # self.api_url = self.shoreside_api_urls[ship_name]
@@ -39,9 +40,11 @@ class coriolix:
         self.get_cruises()
         self.get_sensors(enabled='true')
         self.get_sensor_parameters()
+        # Add a ssuccess message at the end of initialization. Remove the confusing No sensor prameters requested message.
 
     # Build the api url
     def get_api_url(self):
+       # Validate for lowercase and fix if needed.
        if self.server == "ship":
            self.api_url = self.shipside_api_urls[self.ship_name]
        elif self.server == "shore":
@@ -56,15 +59,17 @@ class coriolix:
     # Fetch cruises and add to the coriolix object
     def get_cruises(self, id=None, start_date=None, end_date=None):
 
-        # Get the latest cruise metadata
+        # Get the latest cruise metadata without specifying any particular cruise, get all!
         if id is None and start_date is None and end_date is None:
             query_url = self.api_url+"/cruise/"
             response = requests.get(query_url, verify=False)
-            self.cruise = json.loads(response.text)[0]
+            self.cruises = json.loads(response.text)
+            self.cruise = json.loads(response.text)[-1]
 
         elif id is not None:
             query_url = self.api_url+"/cruise/?cruise_id="+id
             response = requests.get(query_url, verify=False)
+            print(response)
             self.cruise = json.loads(response.text)
 
         elif start_date is not None and end_date is not None:
